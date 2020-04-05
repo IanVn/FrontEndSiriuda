@@ -1,0 +1,79 @@
+// Variables 
+$primary: #3f51b5;
+$secundario: #2962ff;
+$text-white: #fff;
+// Cambiamos el fondo del navbar para que sea transparente
+.bg-light {
+    margin: 0;
+    background: transparent !important;
+    transition: all 600ms ease-out;
+}
+
+// Le quitamos el borde al navbar
+.navbar-dark {
+    .navbar-toggler {
+        border: none;
+    }
+}
+
+// Le quitamos la decoracion al cuadro del navbar cuando se presiona sobre el 
+.navbar-toggler {
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    &:active {
+        outline: none;
+        box-shadow: none;
+    }
+}
+
+// A los elementos del navbar cuando se comprimen les cambiamos la fuente y cuando se hacen hover le aplicamos unas transformaciones
+.navbar-dark {
+    .navbar-nav {
+        .nav-link {
+            font-size: 1rem;
+            color: $text-white;
+            font-weight: 500;
+            transition: all 500ms linear;
+            &:hover {
+                margin-right: 1rem;
+                margin-left: 1rem;
+                background: $primary;
+                transform: translateX(-20%);
+                border-radius: 12px;
+            }
+        }
+    }
+}
+
+img {
+    transition: all 500ms linear;
+}
+
+img:hover {
+    box-shadow: 0px 11px 11px 0px #ede7f6;
+    border-radius: 10px;
+    transform: translateY(-20%);
+}
+
+// Estilo para la barra de navegacion cuando se haga efecto de scroll
+.sticky-top {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    background-color: $primary !important;
+    transition: all 600ms ease-out;
+}
+
+// Agregamos la media query para que cuando se tenga una resolucion menor de 768px los elementos se centren al centro y se eliminen los estilos anteriores 
+@media (max-width: 768px) {
+    .navbar-dark .navbar-nav .nav-link:hover {
+        margin: 0;
+        text-align: center;
+        background-color: $secundario;
+        transform: none;
+        border-radius: 10px;
+    }
+}

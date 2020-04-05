@@ -1,0 +1,126 @@
+/* Variables */
+
+$fondo: #75e2e9;
+$primario: #3f51b5;
+.contenido {
+    background-image: url("https://mdbootstrap.com/img/Photos/Horizontal/Nature/full%20page/img%20%283%29.jpg");
+}
+
+.texto-primario {
+    color: $primario;
+    font-size: 1.5rem !important;
+}
+
+// mat-card {
+//     width: 100%;
+//     // Segunda card
+//     &:nth-child(2) {
+//         background-color: $primario;
+//     }
+//     &:nth-child(2) input::placeholder {
+//         color: #fff;
+//     }
+// }
+.primer-cuadro {
+    border-radius: 1.25rem 0rem 0rem 1.25rem !important;
+}
+
+.segundo-cuadro {
+    border-radius: 0rem 1.25rem 1.25rem 0rem !important;
+    color: #fff !important;
+}
+
+// mat-form-field {
+//     width: 100%;
+// }
+// Añadir un padding al texto 
+// .mat-form-field-appearance-legacy .mat-form-field-infix {
+//     padding-bottom: 0.8rem;
+// }
+// Para alinear el checkbox y que el texto no se salga del contenedor
+// .mat-checkbox-layout {
+//     white-space: normal !important;
+//     align-items: center !important;
+// }
+::ng-deep {
+    .mat-checkbox-layout {
+        white-space: normal !important;
+        align-items: center !important;
+    }
+    mat-card {
+        width: 100%;
+        // Segunda card
+        &:nth-child(2) {
+            background-color: $primario;
+        }
+        &:nth-child(2) input::placeholder {
+            color: #fff;
+        }
+    }
+    mat-form-field {
+        width: 100%;
+    }
+    .mat-form-field-appearance-legacy .mat-form-field-infix {
+        padding-bottom: 0.8rem;
+    }
+    .mat-accent .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: $primario !important;
+    }
+    // Para quitar el outline del datepicker
+    .mat-form-field-appearance-legacy .mat-form-field-suffix .mat-icon-button {
+        outline: none;
+    }
+    // Para editar la fuente de los mensajes de errores
+    .mat-error {
+        font-size: 0.8rem;
+    }
+}
+
+// Segundo card
+.segundo-cuadro::ng-deep {
+    .mat-form-field-appearance-legacy {
+        .mat-form-field-label {
+            color: #fff;
+        }
+        .mat-form-field-underline {
+            background-color: #fff;
+            opacity: 0.5;
+        }
+    }
+    .mat-select-value,
+    .mat-select-arrow {
+        color: #fff !important;
+    }
+    .mat-raised-button {
+        color: #000 !important;
+        font-weight: bold !important;
+    }
+}
+
+.boton-submit {
+    .btn-primary {
+        color: #fff;
+        background-color: #00c851 !important;
+        border-color: #00c851 !important;
+        transition: all 0.5s linear;
+        &:hover {
+            box-shadow: 0px 0px 15px 9px rgba(0, 0, 0, 0.75);
+        }
+    }
+}
+
+
+/* Media query para ajustar el borde*/
+
+@media (max-width: 768px) {
+    .contenido {
+        background: linear-gradient( 136deg, rgb(0, 0, 70) 0%, rgb(28, 181, 224) 100%);
+    }
+    .primer-cuadro {
+        border-radius: 20px 20px 20px 20px !important;
+    }
+    .segundo-cuadro {
+        border-radius: 20px 20px 20px 20px !important;
+        color: #fff !important;
+    }
+}

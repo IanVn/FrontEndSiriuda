@@ -1,0 +1,118 @@
+/* Fuentes */
+
+$fuente: 'Libre Baskerville';
+@font-face {
+    src: url('../../../assets/fonts/Open_Sans/OpenSans-SemiBold.ttf');
+    font-family: $fuente;
+}
+
+$fuente_1: 'Roboto';
+@font-face {
+    src: url('../../../assets/fonts/Roboto/Roboto-Regular.ttf');
+    font-family: $fuente_1;
+}
+
+
+/* Colores */
+
+$primary: #3f51b5;
+$secundario: #2962ff;
+$text-white: #fff;
+.header {
+    background-image: url("https://mdbootstrap.com/img/Photos/Horizontal/Nature/full%20page/img%20%283%29.jpg");
+    background-repeat: no-repeat;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.texto-principal {
+    height: 80vh;
+    h1 {
+        font-family: $fuente;
+        font-size: 3rem;
+        color: $text-white;
+        letter-spacing: 11px;
+        ;
+    }
+}
+
+.barra {
+    color: $primary;
+    font-size: 48px;
+}
+
+.altura {
+    height: 34rem;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background: none !important;
+}
+
+.carousel-control-prev-icon::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f060";
+    font-size: 2rem;
+    color: black;
+}
+
+.carousel-control-next-icon::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f061";
+    font-size: 2rem;
+    color: black;
+}
+
+.btn-outline-primary {
+    color: $text-white;
+    border-color: $primary;
+    font-family: $fuente;
+    &:hover {
+        background-color: $primary;
+    }
+}
+
+.titulo {
+    font-family: $fuente_1;
+    font-size: 2rem;
+    span {
+        color: $primary;
+    }
+}
+
+.titulo_parrafo {
+    color: #6a1b9a;
+}
+
+.informacion p {
+    font-family: $fuente_1;
+    font-size: 1.5rem;
+    line-height: 150%;
+}
+
+.footer {
+    background-color: $primary;
+}
+
+.footer p {
+    font-family: $fuente_1;
+    font-size: 1.5rem;
+    line-height: 150%;
+}
+
+.fab {
+    color: white
+}
+
+
+/* Medias querys */
+
+@media (max-width: 768px) {
+    .texto-principal {
+        height: 30vh;
+    }
+}

@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-light shadow-lg" [ngClass]="{ 'sticky-top': Scroll=== true }">
+    <div class="container-fluid mt-2">
+        <button (click)="cambiarIcono(Icono)" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <mat-icon #Icono>{{IconoMenu}}</mat-icon>
+    </button>
+        <a href="#" class="navbar-brand"> <img src="../../../assets/imagenes/logosPie.png" width="300" alt="..."></a>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav ml-auto text-center">
+                <li class="nav-item">
+                    <a routerLink="/inicio" routerLinkActive="active" class="nav-link" href="#"> Inicio </a>
+                </li>
+                <li class="nav-item ">
+                    <a routerLink="/inicio" routerLinkActive="active" class="nav-link" href="#"> Tutorial </a>
+                </li>
+                <li class="nav-item ">
+                    <a routerLink="/inicio" routerLinkActive="active" class="nav-link" href="#"> Contacto </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,144 @@
+<div class="contenido">
+    <app-navbar [Scroll]="Scroll"></app-navbar>
+    <form class="container py-5" [formGroup]="formulario" (ngSubmit)="RegistroSubmit()">
+        <div class="row justify-content-center">
+            <mat-card class="col-10 col-md-6 text-center primer-cuadro body-1 mb-3">
+                <mat-card-content class="p-2 p-md-5">
+                    <h2 class="my-3 texto-primario"> Información personal </h2>
+
+                    <!-- Campo del curp-->
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label> CURP </mat-label>
+                            <input matInput type="text" placeholder="Escriba su CURP" formControlName="curp">
+                            <mat-error *ngIf="f.curp.invalid || f.curp.touched">
+                                {{ ErroresCurp() }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Nombre y apellido -->
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <mat-form-field>
+                                <mat-label> Nombre </mat-label>
+                                <input matInput type="text" placeholder="Escriba su nombre" formControlName="nombre">
+                                <mat-error *ngIf="f.nombre.hasError('required') || f.nombre.touched">
+                                    Este es un campo obligatorio
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <mat-form-field class="example-full-width">
+                                <mat-label> Apellido </mat-label>
+                                <input matInput type="text" placeholder="Escriba su apellido" formControlName="apellido">
+                                <mat-error *ngIf="f.apellido.hasError('required') || f.apellido.touched">
+                                    Este es un campo obligatorio
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <!-- Fecha de nacimiento y genero-->
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <mat-form-field color="primary">
+                                <mat-label> Fecha de nacimiento </mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="fecha_nacimiento">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+                                <mat-error *ngIf="f.fecha_nacimiento.hasError('required') || f.fecha_nacimiento.touched">
+                                    Este es un campo obligatorio
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <mat-form-field>
+                                <mat-label> Género </mat-label>
+                                <mat-select formControlName="genero">
+                                    <mat-option value="Hombre"> Hombre </mat-option>
+                                    <mat-option value="Mujer"> Mujer </mat-option>
+                                    <mat-option value="Indefinido"> Indefinido </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="f.genero.hasError('required') || f.genero.touched">
+                                    Este es un campo obligatorio
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <!-- Correo -->
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label> Correo </mat-label>
+                            <input matInput type="email" placeholder="Escriba su correo" formControlName="correo">
+                            <mat-error *ngIf="f.correo.invalid || f.correo.touched">
+                                {{ ErroresCorreo() }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label> Contraseña </mat-label>
+                            <input matInput type="password" placeholder="Escriba su contraseña" formControlName="password">
+                            <mat-error *ngIf="f.password.invalid">
+                                Este campo es obligatorio
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Confirmación de contraseña -->
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label>Confirme su contraseña</mat-label>
+                            <input matInput [type]="hide ? 'password': 'text'" placeholder="Password" formControlName="confirm_password">
+                            <mat-icon matSuffix (click)="hide = !hide"> {{hide ? 'visibility_off' : 'visibility'}} </mat-icon>
+                            <mat-error *ngIf="f.confirm_password.invalid || f.confirm_password.touched">
+                                {{ ErroresContrasenia() }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="col-10 col-md-6 segundo-cuadro text-center mb-3">
+                <mat-card-content class="p-2 p-md-5">
+                    <h2 class="my-3 text-white"> Información académica </h2>
+                    <!-- Campo para los tipos -->
+                    <div class="form-group">
+                        <mat-form-field color="accent">
+                            <mat-label> Tipo usuario </mat-label>
+                            <mat-select formControlName="tipoUsuario">
+                                <mat-option> Seleccione una opción </mat-option>
+                                <mat-option *ngFor="let tipo of Tipo|async" [value]="tipo.ID_TIPO"> {{ tipo.NOMBRE_TIPO }} </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="f.tipoUsuario.hasError('required') || f.tipoUsuario.touched">
+                                Este es un campo obligatorio
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Campo para la informacion adicional -->
+                    <div [ngSwitch]="true">
+                        <app-profesor *ngSwitchCase="OpcionTipo === 1"></app-profesor>
+                    </div>
+
+
+                    <!-- Terminos -->
+                    <div class="form-group">
+                        <mat-checkbox color="warn" class="text-justify">
+                            Acepto que la información proporcionada es verídica y que mi nombre completo está escrito correctamente para la emisión de mi constancia. Por lo tanto, me abstendré de solicitar correcciones
+                        </mat-checkbox>
+                    </div>
+
+                    <!-- Boton de registro -->
+                    <div class="form-group boton-submit">
+                        <!-- Se activa porque esta dentro del form  -->
+                        <input class="btn btn-primary" type="submit" value="Registrarme" [disabled]="formulario.invalid">
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </form>
+</div>

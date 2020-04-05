@@ -1,0 +1,30 @@
+// Angular material
+@import '~@angular/material/theming';
+// Fuente personalizada
+$fuente_1: 'Roboto_Personalizado';
+@font-face {
+    src: url('./assets/fonts/Open_Sans/OpenSans-Regular.ttf');
+    font-family: $fuente_1;
+}
+
+// Personalizacion de fuente
+$custom-typography: mat-typography-config( $font-family: $fuente_1,
+$body-1: mat-typography-level(1.2rem, 24px, 500));
+// Incluyendo el core
+@include mat-core($custom-typography);
+// Definiendo la paleta de colores
+$custom-app-primary: mat-palette($mat-indigo);
+$custom-app-accent: mat-palette($mat-blue-grey,
+A100,
+A200,
+A400);
+// The warn palette is optional (defaults to red).
+$custom-app-warn: mat-palette($mat-red);
+// Create the theme object (a Sass map containing all of the palettes).
+$custom-app-theme: mat-light-theme($custom-app-primary,
+$custom-app-accent,
+$custom-app-warn);
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($custom-app-theme);
