@@ -1,10 +1,10 @@
-import { Component, OnInit, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { RegistroService } from '../../services/registro/registro.service';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray, Form } from '@angular/forms';
 import { filter, switchMap } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 import { FormularioService } from '../../services/registro/formulario.service';
-
+import { ProfesorComponent } from './profesor/profesor.component';
 
 
 @Component({
@@ -42,7 +42,8 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
   ExisteArray: boolean = false;
 
   // Inyectamos el servicio de Registro, el servicio de form builder
-  constructor( private Registro: RegistroService, private fb: FormBuilder, private Formulario: FormularioService) { }
+  // tslint:disable-next-line: max-line-length
+  constructor( private Registro: RegistroService, private fb: FormBuilder, private Formulario: FormularioService, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.CrearFormulario();
@@ -53,8 +54,8 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ExisteCorreo();
     this.ContrasenasCoinciden();
     this.Tipo = this.Registro.Tipos();
+    this.ObservaFormulario();
     this.ObservaTipo();
-    this.RecibeFormulario();
   }
 
   ngOnDestroy(){
@@ -86,6 +87,11 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.f.Usuario as FormArray;
   }
 
+  // Funcion que obtiene los controles del form array para hacer la insercion de elementos
+  get arrayControls(){
+    return this.array?.controls[0] as FormGroup;
+  }
+
   // Funcion que crear el formulario
   CrearFormulario(){
     // En el metodo group creamos un objeto con los campos que van a formar parte del formulario
@@ -99,7 +105,8 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
       password: [null, [Validators.required]],
       confirm_password: [null, Validators.required],
       tipoUsuario: [null, [Validators.required]],
-      Usuario: new FormArray([], Validators.required)
+      Confirmacion: [false, [Validators.required]],
+      Usuario: new FormArray([ ], Validators.required)
     });
   }
 
@@ -175,29 +182,110 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.f.confirm_password.hasError('SonDiferentes') ? 'Las contraseñas no coinciden' : '';
   }
 
-  // Funcion que se subscribe al observable que emite el evento del formulario hijo
-  RecibeFormulario(){
-    this.Subscripciones.push( this.Formulario.formulario$.subscribe( formulario => {
-      // Agregamos el formulario hijo al form array del componente padre
-      // Accedemos al control del formulario padre y despues al control del form array
-      this.array.clear();
-      this.array.push ( formulario );
-    }));
-  }
   
   // Funcion que observa los cambios del valor del tipo de usuario y de acuerdo con esto se renderizan los componentes
   ObservaTipo(){
-    this.Subscripciones.push( this.f.tipoUsuario.valueChanges.subscribe( opcion => {
+    this.Subscripciones.push(
+      this.f.tipoUsuario.valueChanges.subscribe( opcion => {
       // Cambiamos la variable de la opcion por el valor que se esta emitiendo, entonces de acuerdo a este valor se renderiza el componente
       // cuando cambiamos de opcion tenemos que limpiar el form array ya que si no lo hacemos se mantiene el valor del array emitido 
+      // console.log('Imprimiendo valor del tipo de usuario. Agregando usuario', opcion);
       this.OpcionTipo = opcion;
       this.array.clear();
-    } ));
+      this.AgregaFormulario( opcion );
+    }));
   }
 
+  ObservaOpcion(): Subscription {
+    const ControlEscuela = this.arrayControls?.controls.Escuela;
+    const ObservaEscuela = ControlEscuela?.valueChanges.subscribe( data => {
+        // console.log('Observando el valor de la escuela', data);
+        if( data === 2 ){
+          // console.log('Agregando el control del profesor de la FM');
+          this.CreaControlesPFM();
+          this.Formulario.EmitirBandera(true);
+          this.ObservaAsignaturas();
+        } else {
+          // console.log('Eliminado el control del profesor de la FM');
+          this.EliminaControlesFM();
+          this.Formulario.EmitirBandera( false );
+          this.ObservaAsignaturas()?.unsubscribe();
+        }
+      });
+    return ObservaEscuela;
+  }
+
+  ObservaAsignaturas(): Subscription {
+    const ControlAsignatura = this.arrayControls?.controls.AsignaturaTercerAnio;
+    const ObservaAsignaturas = ControlAsignatura?.valueChanges.subscribe( data => {
+        // console.log('Ha escogido la materia con numero', data);
+        // console.log('Emitiendo la opcion para renderizarla en la vista de profesor');
+        this.Formulario.EmitirId( Number(data) );
+      });
+    return ObservaAsignaturas;
+  }
+
+  // Funcion que permite agregar al formulario de Usuario el subformulario de acuerdo a la opcion
+  AgregaFormulario( tipo: number ): void {
+
+    switch ( tipo ) {
+      case 1:
+        this.array.push(
+          this.fb.group({
+            EstudiosProfesionales: [null, [Validators.required]],
+            GradoEstudios: [null, [Validators.required]],
+            CargoAcademico: [null, [Validators.required]],
+            Nombramiento: [null, [Validators.required]],
+            Antiguedad: [null, [Validators.required]],
+            Escuela: [null, [Validators.required]],
+        }));
+        this.ObservaOpcion();
+        break;
+      default:
+        this.ObservaOpcion()?.unsubscribe();
+        break;
+    }
+
+  }
+
+  // Funcion que agrega los controles al formulario de Academico de la UNAM si se escoge la opcion de
+  // que la escuela sea la Facultad de Medicina
+  CreaControlesPFM(): void {
+    this.arrayControls.addControl('ImparticionClaseFM', this.fb.control(null, [Validators.required]));
+    this.arrayControls.addControl('ProgramaAcademicoFM', this.fb.control(null, [Validators.required]));
+    this.arrayControls.addControl('DepartamentoAdscripcionFM', this.fb.control(null, [Validators.required]));
+    this.arrayControls.addControl('AsignaturaClinica', this.fb.control(null));
+    this.arrayControls.addControl('AsignaturaBiomedica', this.fb.control(null));
+    this.arrayControls.addControl('AsignaturaSociomedica', this.fb.control(null));
+    this.arrayControls.addControl('AsignaturaTercerAnio', this.fb.control(null, [Validators.required]));
+    this.arrayControls.addControl('OtraAsignatura', this.fb.control(null));
+  }
+
+  // Funcion que elimina los controles en caso de que se escoga un opcion diferente respecto a la escuela
+  EliminaControlesFM(): void {
+    this.arrayControls.removeControl('ImparticionClaseFM');
+    this.arrayControls.removeControl('ProgramaAcademicoFM');
+    this.arrayControls.removeControl('DepartamentoAdscripcionFM');
+    this.arrayControls.removeControl('AsignaturaClinica');
+    this.arrayControls.removeControl('AsignaturaBiomedica');
+    this.arrayControls.removeControl('AsignaturaSociomedica');
+    this.arrayControls.removeControl('AsignaturaTercerAnio');
+    this.arrayControls.removeControl('OtraAsignatura');
+  }
+
+  // Funcion de prueba que observalo los valores del formulario
+  ObservaFormulario(){
+    this.formulario.valueChanges.subscribe( data => {
+      console.log(data);
+    });
+  }
+
+
   // Funcion que obtiene los datos del formulario
-  RegistroSubmit(){
-    console.log(this.formulario);
+  RegistroSubmit() {
+    if (this.formulario.valid){
+      console.log('Formulario Válido', this.formulario);
+    }
   }
 
 

@@ -21,7 +21,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <mat-form-field>
-                                <mat-label> Nombre </mat-label>
+                                <mat-label> Nombre(s) </mat-label>
                                 <input matInput type="text" placeholder="Escriba su nombre" formControlName="nombre">
                                 <mat-error *ngIf="f.nombre.hasError('required') || f.nombre.touched">
                                     Este es un campo obligatorio
@@ -123,19 +123,22 @@
                     <div [ngSwitch]="true">
                         <app-profesor *ngSwitchCase="OpcionTipo === 1"></app-profesor>
                     </div>
-
+                    <!-- <app-profesor></app-profesor> -->
 
                     <!-- Terminos -->
                     <div class="form-group">
-                        <mat-checkbox color="warn" class="text-justify">
+                        <mat-checkbox color="warn" class="text-justify" formControlName="Confirmacion">
                             Acepto que la información proporcionada es verídica y que mi nombre completo está escrito correctamente para la emisión de mi constancia. Por lo tanto, me abstendré de solicitar correcciones
                         </mat-checkbox>
+                        <mat-error *ngIf="f.Confirmacion.hasError('required') || !f.Confirmacion.value ">
+                            Debe de aceptar los términos y condiciones.
+                        </mat-error>
                     </div>
 
                     <!-- Boton de registro -->
                     <div class="form-group boton-submit">
                         <!-- Se activa porque esta dentro del form  -->
-                        <input class="btn btn-primary" type="submit" value="Registrarme" [disabled]="formulario.invalid">
+                        <input class="btn btn-primary" type="submit" value="Registrarme" [disabled]="formulario.invalid || !f.Confirmacion.value">
                     </div>
                 </mat-card-content>
             </mat-card>

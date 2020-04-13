@@ -137,4 +137,28 @@ export class RegistroService {
     );
   }
 
-} 
+  // Servicio para obtener las asignaturas del area clinica
+  AsignaturasClinicas() {
+    let direccion = URL + '/registro/AreaClinica';
+    return this.http.get( direccion).pipe(
+      map( (data: any) => data.datos )
+     );
+  }
+
+  // Servicio para obtener las asignaturas de biomedicas
+  AsignaturasBiomedicas(){
+    let direccion = URL + '/registro/BaseBiomedica';
+    return this.http.get( direccion).pipe(
+      map( (data: any) => data.datos )
+     );
+  }
+
+  // Servicio para obtener las asignaturas de biomedicas
+  AsignaturasSociomedicas(){
+    let direccion = URL + '/registro/BaseSociomedica';
+    return this.http.get( direccion).pipe(
+      map( (data: any) => data.datos )
+     );
+  }
+
+}

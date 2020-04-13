@@ -1,18 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { RegistroService } from '../../../services/registro/registro.service';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, FormArray, FormControl, Form, ControlContainer } from '@angular/forms';
+import { Observable, Subscription, empty, of } from 'rxjs';
 import { FormularioService } from '../../../services/registro/formulario.service';
+import { filter, map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-profesor',
   templateUrl: './profesor.component.html',
-  styleUrls: ['./profesor.component.scss']
+  styleUrls: ['./profesor.component.scss'],
 })
-export class ProfesorComponent implements OnInit, OnDestroy {
+export class ProfesorComponent implements OnInit, OnDestroy, AfterViewInit {
   
   // Variable para almacenar el subformulario
   profesor: FormGroup;
+
+  public ogFormGroup;
 
   // Variable para almacenar los observables
   EstudiosProfesionales: Observable <any>;
@@ -23,6 +26,9 @@ export class ProfesorComponent implements OnInit, OnDestroy {
   ImparticionClase: Observable <any>;
   ProgramaAcademico: Observable <any>;
   DepartamentoAdscripcion: Observable <any>;
+  AsignaturasClinica: Observable <any>;
+  AsignaturasBiomedicas: Observable <any>;
+  AsignaturasSociomedicas: Observable <any>; 
 
   // Variable que almacena true si se escoge la FM y false en caso contrario
   OpcionFM: boolean;
@@ -33,8 +39,16 @@ export class ProfesorComponent implements OnInit, OnDestroy {
   // Variable para almacenar las subscripciones
   Subscripciones: Array<Subscription> = [];
 
+  // Variable para almacenar la opcion escogida para las asignaturas
+  OpcionAsignatura: string;
+
+  bandera: boolean = false;
+
+  id: number;
   // Necesitamos el servicio de registro y los formularios
-  constructor( private Registro: RegistroService, private fb: FormBuilder, private Formulario: FormularioService ) { }
+  // tslint:disable-next-line: whitespace
+  // tslint:disable-next-line: max-line-length
+  constructor( private Registro: RegistroService, private fb: FormBuilder, private Formulario: FormularioService, public controlContainer: ControlContainer ) { }
 
   ngOnDestroy(): void {
     this.Subscripciones.forEach( subscripciones => {
@@ -43,24 +57,19 @@ export class ProfesorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // this.CrearFormulario();
     this.Inicializacion();
-    this.CrearFormulario();
-    this.EscuelaCambios();
-    this.EmitirFormulario();
+    // this.EscuelaCambios();
+    // this.ObservaAsignaturas();
+    this.ogFormGroup = this.controlContainer.control;
+    // console.log('Imprimiendo formgroup del hijo', this.ogFormGroup);
+    this.RecibeBandera();
+    this.RecibeID();
   }
 
-  CrearFormulario(){
-    this.profesor = this.fb.group({
-      EstudiosProfesionales: [null, [Validators.required]],
-      GradoEstudios: [null, [Validators.required]],
-      CargoAcademico: [null, [Validators.required]],
-      Nombramiento: [null, [Validators.required]],
-      Antiguedad: [null, [Validators.required]],
-      Escuela: [null, [Validators.required]],
-      // Agregamos un formArray ya que dependiendo de la opcion puede ser vacio o con datos
-      profesor_fm: new FormArray([])
-    });
+  ngAfterViewInit(): void {
   }
+
 
   // Funcion que regresa un observable de acuerdo con un parametro
   Inicializacion(): void {
@@ -72,64 +81,33 @@ export class ProfesorComponent implements OnInit, OnDestroy {
     this.ImparticionClase = this.Registro.Imparticion();
     this.ProgramaAcademico = this.Registro.ProgramasAcademicos();
     this.DepartamentoAdscripcion = this.Registro.DepartamentoAdscripcion();
+    this.AsignaturasClinica = this.Registro.AsignaturasClinicas();
+    this.AsignaturasBiomedicas = this.Registro.AsignaturasBiomedicas();
+    this.AsignaturasSociomedicas = this.Registro.AsignaturasSociomedicas();
 
     // Ciclo para rellenar el arreglo de los numeros
     for ( let i = 1; i <= 39; i++) {
       this.Numero.push( String(i) );
     }
     this.Numero.unshift('Menos de un año');
-    this.Numero.push('40 años o mas');
+    this.Numero.push('40 años o más');
   }
 
   // Funcion por el cual podemos acceder al control del formulario
+  get array(){
+    return this.ogFormGroup.controls.Usuario as FormArray;
+  }
+
   get f(){
-    return this.profesor.controls;
+    return (this.array?.controls[0] as FormGroup).controls;
   }
 
-  // Funcion para acceder al control del formArray
-  get array() {
-    return this.f.profesor_fm as FormArray;
+  RecibeBandera(){
+    this.Formulario.OnClick$.subscribe( data => this.bandera = data );
   }
 
-  // Funcion que crea el formulario que contendra el formArray
-  InsertarProfesorFM(){
-    this.array.push(this.fb.group({
-      ImparticionClaseFM: [null, [Validators.required]],
-      ProgramaAcademicoFM: [null, [Validators.required]],
-      DepartamentoAdscripcionFM: [null, [Validators.required]]
-    }));
-  }
-
-  // Funcion que permite observar los cambios del atributo de la Escuela o Facultad donde imparte clases
-  EscuelaCambios(){
-    this.Subscripciones.push(
-    this.f.Escuela.valueChanges.subscribe( data => {
-        if (data === 2) {
-          // Como la opcion de facultad de medicina tiene una opcion 2 entonces establecemos la propiedad opcionFM como true para que se 
-          // vea visible los campos del formulario, al mismo tiempo ejecutamos la funcion que agrega un formulario al formarray
-          this.OpcionFM = true;
-          this.array.clear();
-          this.InsertarProfesorFM();
-        } else {
-          // Cuando se cambia de opcion tenemos que dejar limpio el formulario y no podemos dejar visible los campos del formulario
-          this.OpcionFM = false;
-          this.array.clear();
-        }
-      } ));
-  }
-
-  // Funcion que verifica el estado del formulario padre, si es valido entonces lo emite hacia el componente padre
-  EmitirFormulario() {
-    this.Subscripciones.push(
-    this.profesor.statusChanges.subscribe( data => {
-      console.log(data);
-      if (data === 'VALID'){
-        // Emitimos el formulario
-        this.Formulario.EmitirFormulario( this.profesor );
-      } else {
-        return;
-      }
-    }));
+  RecibeID(){
+    this.Formulario.IdMateria$.subscribe( data => this.id = data );
   }
 
 }

@@ -6,7 +6,7 @@ import { RegistroComponent } from './registro/registro.component';
 import { AngularMaterialModule } from '../angular-material/angular-material.module';
 import { SharedModule } from '../shared/shared.module';
 import { ServiciosModule } from '../services/servicios.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProfesorComponent } from './registro/profesor/profesor.component';
 
 
@@ -19,7 +19,8 @@ import { ProfesorComponent } from './registro/profesor/profesor.component';
     AngularMaterialModule,
     SharedModule,
     ServiciosModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class RegistroModule { }
