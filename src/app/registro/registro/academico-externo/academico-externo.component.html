@@ -1,0 +1,65 @@
+<div class="profesor">
+    <div [formGroup]="AcademicoExterno">
+
+        <!-- Campo de Estudios Profesionales -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Estudios profesionales </mat-label>
+                <mat-select formControlName="EstudiosProfesionales">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let estudio of EstudiosProfesionales | async" [value]="estudio.ID_ESTUDIO"> {{ estudio.NOMBRE_ESTUDIO }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.EstudiosProfesionales.hasError('required') || f.EstudiosProfesionales.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo de Grado de estudios -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Grados máximos de estudios </mat-label>
+                <mat-select formControlName="GradoEstudios">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let estudios of GradoEstudio | async" [value]="estudios.ID_GRADO"> {{ estudios.NOMBRE_ESTUDIO }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.GradoEstudios.hasError('required') || f.GradoEstudios.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo de Antiguedad academica -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Antigüedad académica </mat-label>
+                <mat-select formControlName="Antiguedad">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let opcion of Numero" [value]="opcion"> {{ opcion }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Antiguedad.hasError('required') || f.Antiguedad.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <!-- Campo para el Nombre de la institucion -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Institución donde labora </mat-label>
+                <input matInput #message maxlength="100" placeholder="Escriba la institución" formControlName="NombreInstitucion">
+                <mat-hint align="start" class="text-white"> Máximo 100 carácteres </mat-hint>
+                <mat-hint align="end" class="text-white">{{message.value.length}} / 100</mat-hint>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo para las asigntaturas que imparte -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Asignaturas que imparte </mat-label>
+                <input matInput #message1 maxlength="150" placeholder="Puede indicar mas de una asignatura" formControlName="Asignaturas">
+                <mat-hint align="start" class="text-white"> Máximo 150 carácteres </mat-hint>
+                <mat-hint align="end" class="text-white">{{message1.value.length}} / 150</mat-hint>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

@@ -71,7 +71,7 @@ export class ProfesorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  // Funcion que regresa un observable de acuerdo con un parametro
+  // Funcion que asigna las variables a los observables correspondientes para poder visualizar las opciones
   Inicializacion(): void {
     this.EstudiosProfesionales = this.Registro.EstudiosProfesionales();
     this.Escuela = this.Registro.Escuelas();
@@ -102,10 +102,13 @@ export class ProfesorComponent implements OnInit, OnDestroy, AfterViewInit {
     return (this.array?.controls[0] as FormGroup).controls;
   }
 
+  // Funcion que se subscribe a para recibir la bandera
   RecibeBandera(){
     this.Formulario.OnClick$.subscribe( data => this.bandera = data );
   }
 
+  // Funcion que se subscribe para emitir el id de la materia emitida desde el formulario padre, este id permitira renderizar
+  // la opcion de las asignaturas
   RecibeID(){
     this.Formulario.IdMateria$.subscribe( data => this.id = data );
   }

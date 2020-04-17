@@ -54,11 +54,10 @@
                         </div>
                         <div class="form-group col-md-6">
                             <mat-form-field>
-                                <mat-label> Género </mat-label>
+                                <mat-label> Sexo </mat-label>
                                 <mat-select formControlName="genero">
                                     <mat-option value="Hombre"> Hombre </mat-option>
                                     <mat-option value="Mujer"> Mujer </mat-option>
-                                    <mat-option value="Indefinido"> Indefinido </mat-option>
                                 </mat-select>
                                 <mat-error *ngIf="f.genero.hasError('required') || f.genero.touched">
                                     Este es un campo obligatorio
@@ -120,10 +119,11 @@
                     </div>
 
                     <!-- Campo para la informacion adicional -->
-                    <div [ngSwitch]="true">
+                    <!-- <div [ngSwitch]="true">
                         <app-profesor *ngSwitchCase="OpcionTipo === 1"></app-profesor>
-                    </div>
+                    </div> -->
                     <!-- <app-profesor></app-profesor> -->
+                    <ng-template #contenedor></ng-template>
 
                     <!-- Terminos -->
                     <div class="form-group">

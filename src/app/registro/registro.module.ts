@@ -8,11 +8,12 @@ import { SharedModule } from '../shared/shared.module';
 import { ServiciosModule } from '../services/servicios.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProfesorComponent } from './registro/profesor/profesor.component';
+import { AcademicoExternoComponent } from './registro/academico-externo/academico-externo.component';
 
 
 
 @NgModule({
-  declarations: [RegistroComponent, ProfesorComponent],
+  declarations: [RegistroComponent, ProfesorComponent, AcademicoExternoComponent],
   imports: [
     CommonModule,
     RegistroRoutingModule,
@@ -21,6 +22,7 @@ import { ProfesorComponent } from './registro/profesor/profesor.component';
     ServiciosModule,
     ReactiveFormsModule,
     FormsModule
-  ]
+  ],
+  entryComponents: [ProfesorComponent, AcademicoExternoComponent]
 })
 export class RegistroModule { }

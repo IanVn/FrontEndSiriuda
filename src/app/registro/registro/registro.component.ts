@@ -1,10 +1,12 @@
-import { Component, OnInit, HostListener, AfterViewInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit, OnDestroy, ViewChild,
+         ViewContainerRef, ComponentRef, ComponentFactoryResolver, ComponentFactory, ChangeDetectorRef } from '@angular/core';
 import { RegistroService } from '../../services/registro/registro.service';
-import { FormGroup, FormBuilder, Validators, FormArray, Form } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray} from '@angular/forms';
 import { filter, switchMap } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 import { FormularioService } from '../../services/registro/formulario.service';
 import { ProfesorComponent } from './profesor/profesor.component';
+import { AcademicoExternoComponent } from './academico-externo/academico-externo.component';
 
 
 @Component({
@@ -41,9 +43,16 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
   // Variable para almacenar la referencia de que si el form array tenga elementos o no
   ExisteArray: boolean = false;
 
+  // variable para almacenar la referencia al contenedor
+  @ViewChild('contenedor', { read: ViewContainerRef }) contenedor: ViewContainerRef;
+  componentRef: ComponentRef<any>;
+
+  // Formulario hijo
+  Usuario: FormGroup;
+
   // Inyectamos el servicio de Registro, el servicio de form builder
   // tslint:disable-next-line: max-line-length
-  constructor( private Registro: RegistroService, private fb: FormBuilder, private Formulario: FormularioService, private cd: ChangeDetectorRef) { }
+  constructor( private Registro: RegistroService, private fb: FormBuilder, private Formulario: FormularioService, private resolver: ComponentFactoryResolver, private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.CrearFormulario();
@@ -63,6 +72,7 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.Subscripciones.forEach( subscripciones => {
       subscripciones.unsubscribe();
     });
+    this.componentRef.destroy();
   }
 
 
@@ -182,7 +192,33 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.f.confirm_password.hasError('SonDiferentes') ? 'Las contraseñas no coinciden' : '';
   }
 
-  
+  // Metodo para crear componente
+  CrearComponente(tipo: number){
+    // Limpiamos el contenedor
+    let factory: ComponentFactory<any>;
+    this.contenedor.clear();
+    switch (tipo){
+      case 1:
+        // Creamos la inicializacion de la creacion del componente de profesor
+        factory = this.resolver.resolveComponentFactory(ProfesorComponent);
+        // Creamos el componente
+        this.componentRef = this.contenedor.createComponent( factory );
+        break;
+      case 4:
+         // Creamos la inicializacion de la creacion del componente de Academico Externo
+        factory = this.resolver.resolveComponentFactory(AcademicoExternoComponent);
+         // Creamos el componente
+        this.componentRef = this.contenedor.createComponent( factory );
+        console.log(this.componentRef);
+        // Como la propiedad instance tiene la funcion de crear formulario se lo agregamos a la variable Usuario para despues insertarlo
+        // en el form array
+        this.Usuario = this.componentRef.instance.CrearFormulario();
+        break;
+      default:
+        break;
+    }
+  }
+
   // Funcion que observa los cambios del valor del tipo de usuario y de acuerdo con esto se renderizan los componentes
   ObservaTipo(){
     this.Subscripciones.push(
@@ -190,12 +226,16 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
       // Cambiamos la variable de la opcion por el valor que se esta emitiendo, entonces de acuerdo a este valor se renderiza el componente
       // cuando cambiamos de opcion tenemos que limpiar el form array ya que si no lo hacemos se mantiene el valor del array emitido 
       // console.log('Imprimiendo valor del tipo de usuario. Agregando usuario', opcion);
-      this.OpcionTipo = opcion;
+      // this.OpcionTipo = opcion;
       this.array.clear();
+      // Creamos el componente de acuerdo con la opcion
+      this.CrearComponente(opcion);
+      // Agregamos el formulario hijo al formulario padre
       this.AgregaFormulario( opcion );
     }));
   }
 
+  // Funcion que observa el valor de la escuela, si se escoge la FM entonces se agregan nuevos controles al form array de academico
   ObservaOpcion(): Subscription {
     const ControlEscuela = this.arrayControls?.controls.Escuela;
     const ObservaEscuela = ControlEscuela?.valueChanges.subscribe( data => {
@@ -203,18 +243,25 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
         if( data === 2 ){
           // console.log('Agregando el control del profesor de la FM');
           this.CreaControlesPFM();
+          // Emitimos la bandera al componente hijo para que aparezcan los campos
           this.Formulario.EmitirBandera(true);
+          // Llamamos al metodo observable para que verifique las opciones de las asignaturas
           this.ObservaAsignaturas();
         } else {
           // console.log('Eliminado el control del profesor de la FM');
+          // Si se cambian la opcion entonces se eliminan los controles del formulario del form array de academico
           this.EliminaControlesFM();
+          // Emitimos la bandera para que desaparezcan los campos
           this.Formulario.EmitirBandera( false );
+          // Como ya no estamos observando las asignaturas entonces quitamos la subscrpcion
           this.ObservaAsignaturas()?.unsubscribe();
         }
       });
     return ObservaEscuela;
   }
 
+  // Funcion que emite el id de la asignatura que sera recibido por el componente hijo, de acuerdo con este valor se renderiza la opcion 
+  // de acuerdo con el valor que cambie
   ObservaAsignaturas(): Subscription {
     const ControlAsignatura = this.arrayControls?.controls.AsignaturaTercerAnio;
     const ObservaAsignaturas = ControlAsignatura?.valueChanges.subscribe( data => {
@@ -230,6 +277,7 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
 
     switch ( tipo ) {
       case 1:
+        // Formulario del academico normal
         this.array.push(
           this.fb.group({
             EstudiosProfesionales: [null, [Validators.required]],
@@ -239,8 +287,14 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
             Antiguedad: [null, [Validators.required]],
             Escuela: [null, [Validators.required]],
         }));
+        // Llamamos a la funcion de observable para poder observar a escuela
         this.ObservaOpcion();
         break;
+        case 4:
+          // Al crear el compenente dinamico entonces podemos insertar la variable usuario que contiene el formulario hijo
+          this.ObservaOpcion()?.unsubscribe();
+          this.array.push( this.Usuario );
+          break;
       default:
         this.ObservaOpcion()?.unsubscribe();
         break;
