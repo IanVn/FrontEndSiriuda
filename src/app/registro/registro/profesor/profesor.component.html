@@ -96,7 +96,7 @@
                 <!-- Seleccionando el lugar de imparticion -->
                 <div class="form-group">
                     <mat-form-field color="accent">
-                        <mat-label> Sede de impartición donde da clases </mat-label>
+                        <mat-label> Sede donde imparte clases </mat-label>
                         <mat-select formControlName="ImparticionClaseFM">
                             <mat-option> Seleccione una opción </mat-option>
                             <mat-option *ngFor="let imparticion of ImparticionClase | async" [value]="imparticion.ID_LUGAR"> {{ imparticion.LUGAR }} </mat-option>
