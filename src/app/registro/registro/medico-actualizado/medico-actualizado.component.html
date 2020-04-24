@@ -1,0 +1,33 @@
+<div class="profesor">
+    <div [formGroup]="MedicoActualizado">
+
+        <!-- Campo para los estudios profesionales -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Estudios profesionales </mat-label>
+                <mat-select formControlName="EstudiosProfesionales">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let estudio of EstudiosProfesionales | async" [value]="estudio.ID_ESTUDIO"> {{ estudio.NOMBRE_ESTUDIO }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.EstudiosProfesionales.hasError('required') || f.EstudiosProfesionales.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo de Grado de estudios -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Grados máximos de estudios </mat-label>
+                <mat-select formControlName="GradoEstudios">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let estudios of GradoEstudios | async" [value]="estudios.ID_GRADO"> {{ estudios.NOMBRE_ESTUDIO }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.GradoEstudios.hasError('required') || f.GradoEstudios.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+    </div>
+</div>

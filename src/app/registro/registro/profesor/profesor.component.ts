@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, Input, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, } from '@angular/core';
 import { RegistroService } from '../../../services/registro/registro.service';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl, Form, ControlContainer } from '@angular/forms';
-import { Observable, Subscription, empty, of } from 'rxjs';
+import { FormBuilder, FormGroup, FormArray, ControlContainer } from '@angular/forms';
+import { Observable, Subscription} from 'rxjs';
 import { FormularioService } from '../../../services/registro/formulario.service';
-import { filter, map, switchMap} from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-profesor',
@@ -28,7 +28,7 @@ export class ProfesorComponent implements OnInit, OnDestroy, AfterViewInit {
   DepartamentoAdscripcion: Observable <any>;
   AsignaturasClinica: Observable <any>;
   AsignaturasBiomedicas: Observable <any>;
-  AsignaturasSociomedicas: Observable <any>; 
+  AsignaturasSociomedicas: Observable <any>;
 
   // Variable que almacena true si se escoge la FM y false en caso contrario
   OpcionFM: boolean;
@@ -104,13 +104,17 @@ export class ProfesorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Funcion que se subscribe a para recibir la bandera
   RecibeBandera(){
-    this.Formulario.OnClick$.subscribe( data => this.bandera = data );
+    this.Subscripciones.push(
+      this.Formulario.OnClick$.subscribe( data => this.bandera = data )
+    );
   }
 
   // Funcion que se subscribe para emitir el id de la materia emitida desde el formulario padre, este id permitira renderizar
   // la opcion de las asignaturas
   RecibeID(){
-    this.Formulario.IdMateria$.subscribe( data => this.id = data );
+    this.Subscripciones.push(
+      this.Formulario.IdMateria$.subscribe( data => this.id = data )
+    );
   }
 
 }

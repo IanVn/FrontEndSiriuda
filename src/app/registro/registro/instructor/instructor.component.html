@@ -1,0 +1,62 @@
+<div class="profesor">
+    <div [formGroup]="Instructor">
+
+        <!-- Programa academico -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Programa Académico al que pertenece </mat-label>
+                <mat-select formControlName="ProgramaAcademico">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let programa of ProgramaAcademico | async" [value]="programa.ID_PROGRAMA"> {{ programa.NOMBRE_PROGRAMA }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.ProgramaAcademico.hasError('required') || f.ProgramaAcademico.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Categoria </mat-label>
+                <mat-select formControlName="Programa">
+                    <mat-option> Seleccione la categoria </mat-option>
+                    <mat-option *ngFor="let cat of Programa" [value]="cat.programa"> {{ cat.programa }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Programa.hasError('required') || f.Programa.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf="Visible" class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Semestre / Año </mat-label>
+                <mat-select formControlName="Semestre">
+                    <mat-option> Seleccione el semestre o año </mat-option>
+                    <mat-option *ngFor="let sem of Semestre" [value]="sem.semestre"> {{ sem.semestre }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Semestre.hasError('required') || f.Semestre.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo para saber si es un instructor -->
+        <div class="form-group">
+            <mat-slide-toggle labelPosition='before' formControlName="EsInstructor"> ¿Es usted instructor? </mat-slide-toggle>
+        </div>
+
+        <!-- Departamento de adscripcion -->
+        <div *ngIf="f.EsInstructor.value === true " class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Departamento o área en el que colabora</mat-label>
+                <mat-select formControlName="DepartamentoAdscripcion">
+                    <mat-option *ngFor="let departamento of DepartamentoAdscripcion | async" [value]="departamento.ID_DEPARTAMENTO"> {{ departamento.NOMBRE_DEPARTAMENTO }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.DepartamentoAdscripcion.hasError('required') || f.DepartamentoAdscripcion.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

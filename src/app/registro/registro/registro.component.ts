@@ -7,6 +7,11 @@ import { Observable, Subscription } from 'rxjs';
 import { FormularioService } from '../../services/registro/formulario.service';
 import { ProfesorComponent } from './profesor/profesor.component';
 import { AcademicoExternoComponent } from './academico-externo/academico-externo.component';
+import { AspiranteComponent } from './aspirante/aspirante.component';
+import { PosgradoComponent } from './posgrado/posgrado.component';
+import { InstructorComponent } from './instructor/instructor.component';
+import { MedicoActualizadoComponent } from './medico-actualizado/medico-actualizado.component';
+import { PasantesComponent } from './pasantes/pasantes.component';
 
 
 @Component({
@@ -63,7 +68,7 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ExisteCorreo();
     this.ContrasenasCoinciden();
     this.Tipo = this.Registro.Tipos();
-    this.ObservaFormulario();
+    // this.ObservaFormulario();
     this.ObservaTipo();
   }
 
@@ -192,32 +197,6 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.f.confirm_password.hasError('SonDiferentes') ? 'Las contraseñas no coinciden' : '';
   }
 
-  // Metodo para crear componente
-  CrearComponente(tipo: number){
-    // Limpiamos el contenedor
-    let factory: ComponentFactory<any>;
-    this.contenedor.clear();
-    switch (tipo){
-      case 1:
-        // Creamos la inicializacion de la creacion del componente de profesor
-        factory = this.resolver.resolveComponentFactory(ProfesorComponent);
-        // Creamos el componente
-        this.componentRef = this.contenedor.createComponent( factory );
-        break;
-      case 4:
-         // Creamos la inicializacion de la creacion del componente de Academico Externo
-        factory = this.resolver.resolveComponentFactory(AcademicoExternoComponent);
-         // Creamos el componente
-        this.componentRef = this.contenedor.createComponent( factory );
-        console.log(this.componentRef);
-        // Como la propiedad instance tiene la funcion de crear formulario se lo agregamos a la variable Usuario para despues insertarlo
-        // en el form array
-        this.Usuario = this.componentRef.instance.CrearFormulario();
-        break;
-      default:
-        break;
-    }
-  }
 
   // Funcion que observa los cambios del valor del tipo de usuario y de acuerdo con esto se renderizan los componentes
   ObservaTipo(){
@@ -235,41 +214,56 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     }));
   }
 
-  // Funcion que observa el valor de la escuela, si se escoge la FM entonces se agregan nuevos controles al form array de academico
-  ObservaOpcion(): Subscription {
-    const ControlEscuela = this.arrayControls?.controls.Escuela;
-    const ObservaEscuela = ControlEscuela?.valueChanges.subscribe( data => {
-        // console.log('Observando el valor de la escuela', data);
-        if( data === 2 ){
-          // console.log('Agregando el control del profesor de la FM');
-          this.CreaControlesPFM();
-          // Emitimos la bandera al componente hijo para que aparezcan los campos
-          this.Formulario.EmitirBandera(true);
-          // Llamamos al metodo observable para que verifique las opciones de las asignaturas
-          this.ObservaAsignaturas();
-        } else {
-          // console.log('Eliminado el control del profesor de la FM');
-          // Si se cambian la opcion entonces se eliminan los controles del formulario del form array de academico
-          this.EliminaControlesFM();
-          // Emitimos la bandera para que desaparezcan los campos
-          this.Formulario.EmitirBandera( false );
-          // Como ya no estamos observando las asignaturas entonces quitamos la subscrpcion
-          this.ObservaAsignaturas()?.unsubscribe();
-        }
-      });
-    return ObservaEscuela;
-  }
-
-  // Funcion que emite el id de la asignatura que sera recibido por el componente hijo, de acuerdo con este valor se renderiza la opcion 
-  // de acuerdo con el valor que cambie
-  ObservaAsignaturas(): Subscription {
-    const ControlAsignatura = this.arrayControls?.controls.AsignaturaTercerAnio;
-    const ObservaAsignaturas = ControlAsignatura?.valueChanges.subscribe( data => {
-        // console.log('Ha escogido la materia con numero', data);
-        // console.log('Emitiendo la opcion para renderizarla en la vista de profesor');
-        this.Formulario.EmitirId( Number(data) );
-      });
-    return ObservaAsignaturas;
+  // Metodo para crear componente
+  CrearComponente(tipo: number){
+    // Limpiamos el contenedor
+    let factory: ComponentFactory<any>;
+    this.contenedor.clear();
+    switch (tipo){
+      case 1:
+        // Creamos la inicializacion de la creacion del componente de profesor
+        factory = this.resolver.resolveComponentFactory(ProfesorComponent);
+        // Creamos el componente
+        this.componentRef = this.contenedor.createComponent( factory );
+        break;
+      case 4:
+         // Creamos la inicializacion de la creacion del componente de Academico Externo
+        factory = this.resolver.resolveComponentFactory(AcademicoExternoComponent);
+         // Creamos el componente
+        this.componentRef = this.contenedor.createComponent( factory );
+        // Como la propiedad instance tiene la funcion de crear formulario se lo agregamos a la variable Usuario para despues insertarlo
+        // en el form array
+        this.Usuario = this.componentRef.instance.CrearFormulario();
+        break;
+      case 5:
+        // factory devuelve la informacion del componente, es decir, los metadatos
+        factory = this.resolver.resolveComponentFactory( AspiranteComponent );
+        this.componentRef = this.contenedor.createComponent( factory );
+        this.Usuario = this.componentRef.instance.CrearFormulario();
+        break;
+      case 6:
+        factory = this.resolver.resolveComponentFactory( PosgradoComponent );
+        this.componentRef = this.contenedor.createComponent( factory );
+        this.Usuario = this.componentRef.instance.CrearFormulario();
+        break;
+      case 2:
+        factory = this.resolver.resolveComponentFactory( InstructorComponent );
+        this.componentRef = this.contenedor.createComponent( factory );
+        this.Usuario = this.componentRef.instance.CrearFormulario();
+        break;
+      case 7:
+        factory = this.resolver.resolveComponentFactory( MedicoActualizadoComponent );
+        this.componentRef = this.contenedor.createComponent( factory );
+        this.Usuario = this.componentRef.instance.CrearFormulario();
+        break;
+      case 3:
+        factory = this.resolver.resolveComponentFactory( PasantesComponent );
+        this.componentRef = this.contenedor.createComponent( factory );
+        this.Usuario = this.componentRef.instance.CrearFormulario();
+        break;
+      default:
+        break;
+    }
   }
 
   // Funcion que permite agregar al formulario de Usuario el subformulario de acuerdo a la opcion
@@ -290,13 +284,9 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
         // Llamamos a la funcion de observable para poder observar a escuela
         this.ObservaOpcion();
         break;
-        case 4:
-          // Al crear el compenente dinamico entonces podemos insertar la variable usuario que contiene el formulario hijo
-          this.ObservaOpcion()?.unsubscribe();
-          this.array.push( this.Usuario );
-          break;
       default:
         this.ObservaOpcion()?.unsubscribe();
+        this.array.push( this.Usuario );
         break;
     }
 
@@ -327,12 +317,49 @@ export class RegistroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.arrayControls.removeControl('OtraAsignatura');
   }
 
-  // Funcion de prueba que observalo los valores del formulario
-  ObservaFormulario(){
-    this.formulario.valueChanges.subscribe( data => {
-      console.log(data);
-    });
+  // Funcion que observa el valor de la escuela, si se escoge la FM entonces se agregan nuevos controles al form array de academico
+  ObservaOpcion(): Subscription {
+      const ControlEscuela = this.arrayControls?.controls.Escuela;
+      const ObservaEscuela = ControlEscuela?.valueChanges.subscribe( data => {
+          // console.log('Observando el valor de la escuela', data);
+          if( data === 2 ){
+            // console.log('Agregando el control del profesor de la FM');
+            this.CreaControlesPFM();
+            // Emitimos la bandera al componente hijo para que aparezcan los campos
+            this.Formulario.EmitirBandera(true);
+            // Llamamos al metodo observable para que verifique las opciones de las asignaturas
+            this.ObservaAsignaturas();
+          } else {
+            // console.log('Eliminado el control del profesor de la FM');
+            // Si se cambian la opcion entonces se eliminan los controles del formulario del form array de academico
+            this.EliminaControlesFM();
+            // Emitimos la bandera para que desaparezcan los campos
+            this.Formulario.EmitirBandera( false );
+            // Como ya no estamos observando las asignaturas entonces quitamos la subscrpcion
+            this.ObservaAsignaturas()?.unsubscribe();
+          }
+        });
+      return ObservaEscuela;
   }
+
+  // Funcion que emite el id de la asignatura que sera recibido por el componente hijo, de acuerdo con este valor se renderiza la opcion 
+  // de acuerdo con el valor que cambie
+  ObservaAsignaturas(): Subscription {
+      const ControlAsignatura = this.arrayControls?.controls.AsignaturaTercerAnio;
+      const ObservaAsignaturas = ControlAsignatura?.valueChanges.subscribe( data => {
+          // console.log('Ha escogido la materia con numero', data);
+          // console.log('Emitiendo la opcion para renderizarla en la vista de profesor');
+          this.Formulario.EmitirId( Number(data) );
+        });
+      return ObservaAsignaturas;
+  }
+
+  // Funcion de prueba que observalo los valores del formulario
+  // ObservaFormulario(){
+  //   this.formulario.valueChanges.subscribe( data => {
+  //     console.log(data);
+  //   });
+  // }
 
 
   // Funcion que obtiene los datos del formulario

@@ -1,0 +1,73 @@
+<div class="profesor">
+    <div [formGroup]="Pasantes">
+
+        <!-- Campo de Departamento de Adscripcion -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Departamento o área en la que desarrolla su servicio social </mat-label>
+                <mat-select formControlName="DepartamentoAdscripcion">
+                    <mat-option *ngFor="let departamento of DepartamentoAdscripcion | async" [value]="departamento.ID_DEPARTAMENTO"> {{ departamento.NOMBRE_DEPARTAMENTO }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.DepartamentoAdscripcion.hasError('required') || f.DepartamentoAdscripcion.touched">
+                    Debe seleccionar un departamento o área en la que desarrolla su servicio social
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Programa Academico -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Licenciatura en la que esta inscrito </mat-label>
+                <mat-select formControlName="ProgramaAcademico">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let programa of ProgramaAcademico | async" [value]="programa.ID_PROGRAMA"> {{ programa.NOMBRE_PROGRAMA }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.ProgramaAcademico.hasError('required') || f.ProgramaAcademico.touched">
+                    Debe seleccionar una licenciatura en la que esta inscrito
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo para escribir otra licenciatura -->
+        <div *ngIf="opcion === 7" class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Otra licenciatura </mat-label>
+                <input matInput #message maxlength="50" placeholder="Otra licenciatura/programa académico" formControlName="OtraLicenciatura">
+                <mat-hint align="start" class="text-white"> Máximo 50 carácteres </mat-hint>
+                <mat-hint align="end" class="text-white">{{message.value.length}} / 50</mat-hint>
+                <mat-error *ngIf="f.OtraLicenciatura.hasError('required') || f.OtraLicenciatura.touched">
+                    Debe escribir una licenciatura en la que este inscrito
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo para la modalidad -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Modalidad </mat-label>
+                <mat-select formControlName="Modalidad">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let mod of Modalidad | async" [value]="mod.ID_MODALIDAD"> {{ mod.NOMBRE_MODALIDAD }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Modalidad.hasError('required') || f.Modalidad.touched">
+                    Debe seleccionar una modalidad
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campo para la secretarías -->
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Secretaría </mat-label>
+                <mat-select formControlName="Secretarias">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let sec of Secretarias | async" [value]="sec.ID_SECRETARIA"> {{ sec.NOMBRE_SECRETARIA }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Secretarias.hasError('required') || f.Secretarias.touched">
+                    Debe seleccionar una secretaría
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+    </div>
+</div>
