@@ -1,184 +1,186 @@
 <div class="profesor">
-    <div *ngFor="let item of array.controls">
-        <div [formGroup]="item">
+    <div [formGroup]="profesor">
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Estudios profesionales </mat-label>
+                <mat-select formControlName="EstudiosProfesionales">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let estudio of EstudiosProfesionales | async" [value]="estudio.ID_ESTUDIO"> {{ estudio.NOMBRE_ESTUDIO }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.EstudiosProfesionales.hasError('required') || f.EstudiosProfesionales.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Grados máximos de estudios </mat-label>
+                <mat-select formControlName="GradoEstudios">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let estudios of GradoEstudio | async" [value]="estudios.ID_GRADO"> {{ estudios.NOMBRE_ESTUDIO }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.GradoEstudios.hasError('required') || f.GradoEstudios.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Cargo Académico </mat-label>
+                <mat-select formControlName="CargoAcademico">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let cargo of CargoAcademico | async" [value]="cargo.ID_CARGO"> {{ cargo.NOMBRE_CARGO }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.CargoAcademico.hasError('required') || f.CargoAcademico.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Nombramiento </mat-label>
+                <mat-select formControlName="Nombramiento">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let nombramiento of Nombramiento | async" [value]="nombramiento.ID_NOMBRAMIENTO"> {{ nombramiento.NOMBRE_NOMBRAMIENTO }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Nombramiento.hasError('required') || f.Nombramiento.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Antigüedad académica </mat-label>
+                <mat-select formControlName="Antiguedad">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let opcion of Numero" [value]="opcion"> {{ opcion }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Antiguedad.hasError('required') || f.Antiguedad.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="form-group">
+            <mat-form-field color="accent">
+                <mat-label> Escuela o Facultad donde imparte clases </mat-label>
+                <mat-select formControlName="Escuela">
+                    <mat-option> Seleccione una opción </mat-option>
+                    <mat-option *ngFor="let escuela of Escuela | async" [value]="escuela.ID_ESCUELA"> {{ escuela.NOMBRE_ESCUELA }} </mat-option>
+                </mat-select>
+                <mat-error *ngIf="f.Escuela.hasError('required') || f.Escuela.touched">
+                    Este es un campo obligatorio
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <!-- Campos exclusivos para cuando se escoga la opcion de profesor -->
+        <div *ngIf="bandera" formGroupName="ProfesorFM">
+
+            <!-- Seleccionando departamentos de adscripcion -->
             <div class="form-group">
                 <mat-form-field color="accent">
-                    <mat-label> Estudios profesionales </mat-label>
-                    <mat-select formControlName="EstudiosProfesionales">
-                        <mat-option> Seleccione una opción </mat-option>
-                        <mat-option *ngFor="let estudio of EstudiosProfesionales | async" [value]="estudio.ID_ESTUDIO"> {{ estudio.NOMBRE_ESTUDIO }}</mat-option>
+                    <mat-label> Departamento de adscripción al que pertenece </mat-label>
+                    <mat-select formControlName="DepartamentoAdscripcion" multiple>
+                        <mat-option *ngFor="let departamento of DepartamentoAdscripcion | async" [value]="departamento.ID_DEPARTAMENTO"> {{ departamento.NOMBRE_DEPARTAMENTO }} </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="f.EstudiosProfesionales.hasError('required') || f.EstudiosProfesionales.touched">
+                    <mat-error *ngIf="Profesor.DepartamentoAdscripcion.hasError('required') || Profesor.DepartamentoAdscripcion.touched">
                         Este es un campo obligatorio
                     </mat-error>
                 </mat-form-field>
             </div>
+
+            <!-- Seleccionando el lugar de imparticion -->
             <div class="form-group">
                 <mat-form-field color="accent">
-                    <mat-label> Grados máximos de estudios </mat-label>
-                    <mat-select formControlName="GradoEstudios">
+                    <mat-label> Sede donde imparte clases </mat-label>
+                    <mat-select formControlName="ImparticionClase">
                         <mat-option> Seleccione una opción </mat-option>
-                        <mat-option *ngFor="let estudios of GradoEstudio | async" [value]="estudios.ID_GRADO"> {{ estudios.NOMBRE_ESTUDIO }} </mat-option>
+                        <mat-option *ngFor="let imparticion of ImparticionClase | async" [value]="imparticion.ID_LUGAR"> {{ imparticion.LUGAR }} </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="f.GradoEstudios.hasError('required') || f.GradoEstudios.touched">
+                    <!-- Alternativa al acceso por medio de control que seria item.control.ImparticionClaseFM.hasError(...) -->
+                    <mat-error *ngIf="Profesor.ImparticionClase.hasError('required') || Profesor.ImparticionClase.touched">
                         Este es un campo obligatorio
                     </mat-error>
                 </mat-form-field>
             </div>
 
+            <!-- Programa Academico -->
             <div class="form-group">
                 <mat-form-field color="accent">
-                    <mat-label> Cargo Académico </mat-label>
-                    <mat-select formControlName="CargoAcademico">
+                    <mat-label> Programa Académico al que pertenece </mat-label>
+                    <mat-select formControlName="ProgramaAcademico">
                         <mat-option> Seleccione una opción </mat-option>
-                        <mat-option *ngFor="let cargo of CargoAcademico | async" [value]="cargo.ID_CARGO"> {{ cargo.NOMBRE_CARGO }} </mat-option>
+                        <mat-option *ngFor="let programa of ProgramaAcademico | async" [value]="programa.ID_PROGRAMA"> {{ programa.NOMBRE_PROGRAMA }} </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="f.CargoAcademico.hasError('required') || f.CargoAcademico.touched">
+                    <mat-error *ngIf="Profesor.ProgramaAcademico.hasError('required') || Profesor.ProgramaAcademico.touched">
                         Este es un campo obligatorio
                     </mat-error>
                 </mat-form-field>
             </div>
 
-            <div class="form-group">
-                <mat-form-field color="accent">
-                    <mat-label> Nombramiento </mat-label>
-                    <mat-select formControlName="Nombramiento">
-                        <mat-option> Seleccione una opción </mat-option>
-                        <mat-option *ngFor="let nombramiento of Nombramiento | async" [value]="nombramiento.ID_NOMBRAMIENTO"> {{ nombramiento.NOMBRE_NOMBRAMIENTO }} </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="f.Nombramiento.hasError('required') || f.Nombramiento.touched">
-                        Este es un campo obligatorio
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-            <div class="form-group">
-                <mat-form-field color="accent">
-                    <mat-label> Antigüedad académica </mat-label>
-                    <mat-select formControlName="Antiguedad">
-                        <mat-option> Seleccione una opción </mat-option>
-                        <mat-option *ngFor="let opcion of Numero" [value]="opcion"> {{ opcion }} </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="f.Antiguedad.hasError('required') || f.Antiguedad.touched">
-                        Este es un campo obligatorio
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-            <div class="form-group">
-                <mat-form-field color="accent">
-                    <mat-label> Escuela o Facultad donde imparte clases </mat-label>
-                    <mat-select formControlName="Escuela">
-                        <mat-option> Seleccione una opción </mat-option>
-                        <mat-option *ngFor="let escuela of Escuela | async" [value]="escuela.ID_ESCUELA"> {{ escuela.NOMBRE_ESCUELA }} </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="f.Escuela.hasError('required') || f.Escuela.touched">
-                        Este es un campo obligatorio
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-            <!-- Opciones que se habilitan cuando se cambia la opcion de la Escuela -->
-            <div *ngIf="bandera">
-                <!-- Seleccionando departamentos de adscripcion -->
-                <div class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Departamento de adscripción al que pertenece </mat-label>
-                        <mat-select formControlName="DepartamentoAdscripcionFM" multiple>
-                            <mat-option *ngFor="let departamento of DepartamentoAdscripcion | async" [value]="departamento.ID_DEPARTAMENTO"> {{ departamento.NOMBRE_DEPARTAMENTO }} </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="f.DepartamentoAdscripcionFM.hasError('required') || f.DepartamentoAdscripcionFM.touched">
-                            Este es un campo obligatorio
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <!-- Seleccionando el lugar de imparticion -->
-                <div class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Sede donde imparte clases </mat-label>
-                        <mat-select formControlName="ImparticionClaseFM">
-                            <mat-option> Seleccione una opción </mat-option>
-                            <mat-option *ngFor="let imparticion of ImparticionClase | async" [value]="imparticion.ID_LUGAR"> {{ imparticion.LUGAR }} </mat-option>
-                        </mat-select>
-                        <!-- Alternativa al acceso por medio de control que seria item.control.ImparticionClaseFM.hasError(...) -->
-                        <mat-error *ngIf="f.ImparticionClaseFM.hasError('required') || f.ImparticionClaseFM.touched">
-                            Este es un campo obligatorio
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Programa Académico al que pertenece </mat-label>
-                        <mat-select formControlName="ProgramaAcademicoFM">
-                            <mat-option> Seleccione una opción </mat-option>
-                            <mat-option *ngFor="let programa of ProgramaAcademico | async" [value]="programa.ID_PROGRAMA"> {{ programa.NOMBRE_PROGRAMA }} </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="f.ProgramaAcademicoFM.hasError('required') || f.ProgramaAcademicoFM.touched">
-                            Este es un campo obligatorio
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <!-- Seleccion del tipo de asignaturas -->
-                <!-- Nota importante: La opcion de valor 4 es una materia aparte que se considera como un atributo en la base de datos
+            <!-- Seleccion de las asignaturas en las que imparte clases -->
+            <!-- Nota importante: La opcion de valor 4 es una materia aparte que se considera como un atributo en la base de datos
                             la estrategia es que si el valor pasado en el formulario es diferente de 4 no se hace la insercion en dicho atributo, si es igual
                             a 4 entonces se hace la inserción -->
-                <div class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Asignatura(s) en la que imparte clases </mat-label>
-                        <mat-select formControlName="AsignaturaTercerAnio">
-                            <mat-option value=1> Asignaturas clínicas </mat-option>
-                            <mat-option value=2> Asignaturas biomédicas </mat-option>
-                            <mat-option value=3> Asignaturas sociomédicas y humanísticas </mat-option>
-                            <mat-option value=4> Asignaturas de tercero, cuarto o quinto año </mat-option>
-                            <mat-option value=5> Otra asignatura </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="f.AsignaturaTercerAnio.hasError('required') || f.AsignaturaTercerAnio.touched">
-                            Este es un campo obligatorio
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+            <div class="form-group">
+                <mat-form-field color="accent">
+                    <mat-label> Asignatura(s) en la que imparte clases </mat-label>
+                    <mat-select formControlName="AsignaturaTercerAnio">
+                        <mat-option> Seleccione una opción </mat-option>
+                        <mat-option value=1> Asignaturas clínicas </mat-option>
+                        <mat-option value=2> Asignaturas biomédicas </mat-option>
+                        <mat-option value=3> Asignaturas sociomédicas y humanísticas </mat-option>
+                        <mat-option value=4> Asignaturas de tercero, cuarto o quinto año </mat-option>
+                        <mat-option value=5> Otra asignatura </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="Profesor.AsignaturaTercerAnio.hasError('required') || Profesor.AsignaturaTercerAnio.touched">
+                        Este es un campo obligatorio
+                    </mat-error>
+                </mat-form-field>
+            </div>
 
-                <!-- Asignaturas del area clinica -->
-                <div *ngIf=" id === 1 " class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Seleccione algunas opciones </mat-label>
-                        <mat-select formControlName="AsignaturaClinica" multiple>
-                            <mat-option *ngFor="let clinica of AsignaturasClinica | async" [value]="clinica.id_asignatura_clinica"> {{ clinica.nombre_asignatura_clinica }} </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
+            <!-- Asignaturas del area clinica -->
+            <div *ngIf=" id === 1 " class="form-group">
+                <mat-form-field color="accent">
+                    <mat-label> Seleccione algunas opciones </mat-label>
+                    <mat-select formControlName="AsignaturaClinica" multiple>
+                        <mat-option *ngFor="let clinica of AsignaturasClinica | async" [value]="clinica.id_asignatura_clinica"> {{ clinica.nombre_asignatura_clinica }} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
 
-                <!-- Asignaturas del area biomedica -->
-                <div *ngIf=" id === 2 " class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Seleccione algunas opciones </mat-label>
-                        <mat-select formControlName="AsignaturaBiomedica" multiple>
-                            <mat-option *ngFor="let biomedica of AsignaturasBiomedicas | async" [value]="biomedica.id_asignatura_biomedica"> {{ biomedica.nombre_asig_biomedica }} </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
+            <!-- Asignaturas del area biomedica -->
+            <div *ngIf=" id === 2 " class="form-group">
+                <mat-form-field color="accent">
+                    <mat-label> Seleccione algunas opciones </mat-label>
+                    <mat-select formControlName="AsignaturaBiomedica" multiple>
+                        <mat-option *ngFor="let biomedica of AsignaturasBiomedicas | async" [value]="biomedica.id_asignatura_biomedica"> {{ biomedica.nombre_asig_biomedica }} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
 
-                <!-- Asignaturas del area de sociomédica -->
-                <div *ngIf=" id === 3 " class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Seleccione algunas opciones </mat-label>
-                        <mat-select formControlName="AsignaturaSociomedica" multiple>
-                            <mat-option *ngFor="let sociomedica of AsignaturasSociomedicas | async" [value]="sociomedica.id_asignatura_sociomedica"> {{ sociomedica.nombre_asig_sociomedica }} </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
+            <!-- Asignaturas del area de sociomédica -->
+            <div *ngIf=" id === 3 " class="form-group">
+                <mat-form-field color="accent">
+                    <mat-label> Seleccione algunas opciones </mat-label>
+                    <mat-select formControlName="AsignaturaSociomedica" multiple>
+                        <mat-option *ngFor="let sociomedica of AsignaturasSociomedicas | async" [value]="sociomedica.id_asignatura_sociomedica"> {{ sociomedica.nombre_asig_sociomedica }} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
 
-                <!-- Asignatura en caso de que no se eligan ninguna de las anteriores -->
-                <div *ngIf="id === 5 " class="form-group">
-                    <mat-form-field color="accent">
-                        <mat-label> Escriba otra asigantura que imparta </mat-label>
-                        <input matInput #message maxlength="50" placeholder="Escriba otra asignatura que imparte" formControlName="OtraAsignatura">
-                        <mat-hint align="start" class="text-white"> Máximo 50 carácteres </mat-hint>
-                        <mat-hint align="end" class="text-white">{{message.value.length}} / 50</mat-hint>
-                    </mat-form-field>
-                </div>
+            <!-- Asignatura en caso de que no se eligan ninguna de las anteriores -->
+            <div *ngIf="id === 5 " class="form-group">
+                <mat-form-field color="accent">
+                    <mat-label> Escriba otra asigantura que imparta </mat-label>
+                    <input matInput #message maxlength="50" placeholder="Escriba otra asignatura que imparte" formControlName="OtraAsignatura">
+                    <mat-hint align="start" class="text-white"> Máximo 50 carácteres </mat-hint>
+                    <mat-hint align="end" class="text-white">{{message.value.length}} / 50</mat-hint>
+                </mat-form-field>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { RegistroService } from 'src/app/services/registro/registro.service';
@@ -22,16 +22,18 @@ export class PasantesComponent implements OnInit, OnDestroy {
   // Opcion
   opcion: number = 0;
 
-  constructor( private fb: FormBuilder, private Registro: RegistroService ) { }
+  constructor( private fb: FormBuilder, private Registro: RegistroService ) {}
 
   ngOnInit(): void {
     this.Inicializacion();
     this.ObservaLicenciatura();
+    console.log('OnInit Pasantes', this.Pasantes);
   }
 
   ngOnDestroy(): void {
     this.ObservaLicenciatura().unsubscribe();
   }
+
 
   CrearFormulario(){
     this.Pasantes = this.fb.group({
